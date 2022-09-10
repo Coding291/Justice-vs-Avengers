@@ -16,6 +16,16 @@ Comment.init(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
+		like: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue:0,
+		},
+		dislike: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			defaultValue:0,
+		},
 		user_id: {
 			type: DataTypes.INTEGER,
 			references: {

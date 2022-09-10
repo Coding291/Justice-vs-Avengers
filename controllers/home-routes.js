@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { User, Post, Comment, Hero } = require("../models");
+const { User, Post, Comment, Hero,DcHero,MarvelHero } = require("../models");
 const withAuth = require("../utils/auth");
 
 // to get all of the posts and render them
@@ -163,6 +163,68 @@ router.get("/signup", (req, res) => {
 		return;
 	}
 	res.render("signup");
+});
+
+
+//add new
+
+router.get("/like/comments/:id/:postid", async (req, res) => {
+	try {
+		const commentData = await Comment.findByPk(req.params.id);
+		const singlecomment = commentData.get({ plain: true });
+		var likedb=singlecomment.like
+
+		commentData.update(
+			{like:likedb+1}
+		);
+
+		// Simulate a mouse click:
+		res.redirect("/posts/"+req.params.postid)
+		
+	} catch (err) {
+		res.status(500).json(err);
+	}
+});
+
+//add new
+
+router.get("/dislike/comments/:id/:postid", async (req, res) => {
+	try {
+		const commentData = await Comment.findByPk(req.params.id);
+		const singlecomment = commentData.get({ plain: true });
+		var likedb=singlecomment.dislike
+		commentData.update(
+			{dislike:likedb+1}
+		);
+
+		// Simulate a mouse click:
+		res.redirect("/posts/"+req.params.postid)
+		
+	} catch (err) {
+		res.status(500).json(err);
+	}
+});
+
+// this is by me
+router.get("/MarvelAndDC", withAuth, async (req, res) => {
+	try {
+		
+
+		const DcHerodata=await DcHero.findAll();
+		const DcHeroView = DcHerodata.map((dcdata) => dcdata.get({ plain: true }));
+
+		const MarvelHerodata=await MarvelHero.findAll();
+		const MarvelHeroView = MarvelHerodata.map((marveldata) => marveldata.get({ plain: true }));
+		
+
+		res.render("MarvelAndDC", {
+			DcHeroView,
+			MarvelHeroView,
+			loggedIn: req.session.loggedIn,
+		});
+	} catch (err) {
+		res.status(500).json(err);
+	}
 });
 
 module.exports = router;
